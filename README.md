@@ -2,7 +2,9 @@
 
 A collaborative note-taking application, similar to Google Docs.
 
-## Features
+## Work in progress
+
+## Planned Features
 
 - Users can edit a document synchronously.
 - Users are assigned different roles (owner, admin, or user).
