@@ -22,8 +22,7 @@ A collaborative note-taking application, similar to Google Docs.
 ### Backend
 
 - Node
-- C++
-- CMake
+- C# / .NET
 - MySQL
 
 ### Deployment
