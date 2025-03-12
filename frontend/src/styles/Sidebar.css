@@ -1,0 +1,68 @@
+#sidebar-main {
+    width: 0;
+    transition: width .5s ease-in-out;
+    border-right: 2px solid black;
+    background-color: #1a1a1a;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#sidebar-main.open {
+    width: 15%;
+}
+
+#hamburger {
+    position: fixed;
+    background: none;
+    left: 0;
+    top: 10px;
+    border: none;
+    width: 80px;
+    transition: transform 0.5s ease-in-out;
+}
+
+#hamburger:focus {
+    outline: none;
+}
+
+#sidebar-container.open #hamburger {
+    transform: translateX(15vw);
+}
+
+#login-container {
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-15vw);
+    transition: transform 0.5s ease-in-out;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-container input {
+    width: 80%;
+}
+
+#login-container p {
+    font-size: small;
+    color: rgb(79, 79, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#sidebar-container.open #login-container {
+    transform: translateX(0vw);
+}
+
+#login-container button {
+    margin-top: 8px;
+    padding: .3em;
+    width: 50%;
+    border: 2px solid grey;
+    transition: border-color 0.25s;
+}
+
+#login-container button:hover {
+    border-color: rgb(255, 255, 255);
+}

@@ -42,6 +42,7 @@ export const Editor = () => {
     const { hubConnection, connectionStatus, sendMessage, sendUpdate, getContent } = useConnection(user);
     // const { sendMessage, sendUpdate } = useMessenger();
     
+    // Operational Transformation
     function transform(opA: Operation, opB: Operation): Operation {
         if (opA.position < opB.position || (opA.position === opB.position && opA.timestamp < opB.timestamp)) {
           return opA; // don't adjust if it's earlier
