@@ -1,6 +1,6 @@
 #sidebar-main {
     width: 0;
-    transition: width .5s ease-in-out;
+    transition: all .5s ease-in-out;
     border-right: 2px solid black;
     background-color: #1a1a1a;
     height: 100%;
@@ -9,7 +9,7 @@
     left: 0;
 }
 
-#sidebar-main.open {
+#sidebar-main.sidebar-open {
     width: 15%;
 }
 
@@ -25,10 +25,6 @@
 
 #hamburger:focus {
     outline: none;
-}
-
-#sidebar-container.open #hamburger {
-    transform: translateX(15vw);
 }
 
 #login-container {
@@ -51,7 +47,7 @@
     text-decoration: underline;
 }
 
-#sidebar-container.open #login-container {
+#sidebar-container.sidebar-open #login-container {
     transform: translateX(0vw);
 }
 
@@ -65,4 +61,67 @@
 
 #login-container button:hover {
     border-color: rgb(255, 255, 255);
+}
+
+h3 {
+    margin: 5px;
+}
+
+#history-container, #recent-container {
+    width: 90%;
+    text-align: left;
+    border-bottom: 2px solid rgb(46, 46, 46);
+    padding: 0;
+}
+
+#history-list, #recent-list {
+    list-style-type: none;
+    margin: 2px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#history-list.history-open, #recent-list.recent-open {
+    max-height: 1000px;
+    opacity: 1;
+    overflow: auto;
+}
+
+#arrow {
+    float: right;
+    transform: rotate(0deg);
+    transition: all .3s ease;
+}
+
+#arrow img {
+    height: 1em;
+}
+
+#arrow.arrow-open {
+    transform: rotate(180deg);
+}
+
+@media (min-width: 800px) {
+    #sidebar-container.sidebar-open #hamburger {
+        transform: translateX(15vw);
+    }
+}
+
+@media (max-width: 800px) {
+    #sidebar-main {
+        width: 100%;
+        height: 0;
+    }
+    #login-container {
+        transform: translateY(-20vh);
+        width: 100vw;
+    }
+    #login-container input {
+        width: 50%;
+    }
+    #sidebar-container.sidebar-open #login-container {
+        transform: translateY(0vh);
+    }
 }
