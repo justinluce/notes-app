@@ -7,6 +7,7 @@ const useConnection = (user) => {
     const [hubConnection, setHubConnection] = useState(null);
 
     useEffect(() => {
+        if (user === '') return;
         const connection = new signalR.HubConnectionBuilder()
             .withUrl(`http://localhost:${endpoint}/chatHub`)
             .withAutomaticReconnect()
@@ -47,7 +48,6 @@ const useConnection = (user) => {
     }, [user]);
 
     useEffect(() => {
-        console.log(hubConnection);
         if (!hubConnection) return;
 
         hubConnection.on("ReceiveMessage", (user, message) => {

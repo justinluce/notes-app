@@ -1,6 +1,7 @@
 import { KeyboardEvent, useEffect, useState, useCallback, ChangeEvent } from "react";
 import '../styles/Editor.css';
 import useConnection from '../connections/useConnection.js';
+import { useUser } from "../Context/UserContext.js";
 
 type Operation = {
     type: "insert" | "Backspace";
@@ -36,11 +37,11 @@ class Document {
 }
 
 export const Editor = () => {
-    const [user, setUser] = useState("Luce");
     const [documentState, setDocumentState] = useState(new Document());
     const [messageState, setMessageState] = useState('');
 
-    const { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(user);
+    const { currentUser, setUser, clearUser } = useUser();
+    const { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(currentUser);
     // const { sendMessage, sendUpdate } = useMessenger();
     
     // Operational Transformation
@@ -93,7 +94,7 @@ export const Editor = () => {
 
         console.log(newDocument);
         
-        sendUpdate(hubConnection, user, target.value);
+        sendUpdate(hubConnection, currentUser, target.value);
         setDocumentState(prev => {
             return new Document(target.value, [...prev.history, ...newDocument.history]);
         });
@@ -105,7 +106,28 @@ export const Editor = () => {
     }
 
     const handleMessage = () => {
-        sendMessage(user, messageState);
+        sendMessage(currentUser, messageState);
+    }
+
+    const renderConnectionStatus = () => {
+        if (currentUser === '') {
+            return <p>Not logged in</p>;
+        }
+
+        if (connectionStatus === 'Connected') {
+            return <p>Logged in as {currentUser}</p>;
+        }
+      
+        if (connectionStatus === 'Disconnected') {
+          return (
+            <>
+              <p>{connectionStatus}</p>
+              <button onClick={reconnect}>Reconnect</button>
+            </>
+          );
+        }
+
+        return <p>{connectionStatus}</p>
     }
 
     useEffect(() => {
@@ -120,17 +142,7 @@ export const Editor = () => {
     return (
         <div id='editor-container'>
             <div id='connection-status'>
-                {(connectionStatus === 'Loading' || connectionStatus === 'Disconnected') && (
-                    <>
-                        <p>{connectionStatus}</p>
-                        {connectionStatus == 'Disconnected' && (
-                            <button onClick={() => reconnect()}>Reconnect</button>
-                        )}
-                    </>
-                )}
-                {connectionStatus == 'Connected' && (
-                    <p>Logged in as {user}</p>
-                )}
+                {renderConnectionStatus()}
             </div>
             <textarea id='document' onKeyDown={(e) => handleInput(e)} />
             <input 
