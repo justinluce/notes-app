@@ -7,7 +7,7 @@ import { useDocument } from "../Context/DocumentContext.js";
 export const Editor = () => {
     const [messageState, setMessageState] = useState('');
 
-    const { documentState, updateDocument } = useDocument();
+    const { documentState, updateDocument, updateTitle } = useDocument();
     const { currentUser, setUser, clearUser } = useUser();
     const { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(currentUser);
     // const { sendMessage, sendUpdate } = useMessenger();
@@ -89,7 +89,15 @@ export const Editor = () => {
             <div id='connection-status'>
                 {renderConnectionStatus()}
             </div>
-            <textarea 
+            <div id='document-title'>
+                <h2 
+                    contentEditable='true'
+                    onBlur={(e) => updateTitle(e)}
+                >
+                    {documentState.title}
+                </h2>
+            </div>
+            <textarea
                 id='document' 
                 onKeyUp={(e) => handleInput(e)}
                 defaultValue={documentState.content}

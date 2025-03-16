@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, ReactNode, useCallback } from "react";
+import React, { useState, createContext, useContext, ReactNode, useCallback } from "react";
 
 type Operation = {
     type: "insert" | "Backspace";
@@ -13,7 +13,7 @@ class Document {
     content: string;
     history: Operation[];
 
-    constructor(title = "", content = "", history: Operation[] = []) {
+    constructor(title = "Document Title", content = "", history: Operation[] = []) {
         this.title = title;
         this.content = content;
         this.history = history;
@@ -38,6 +38,7 @@ class Document {
 interface DoucumentContextType {
     documentState: Document;
     updateDocument: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+    updateTitle: (e: React.FocusEvent<HTMLHeadingElement>) => void;
 }
 
 export const DocumentContext = createContext<DoucumentContextType | undefined>(undefined);
@@ -83,7 +84,12 @@ export function DocumentProvider({ children }: DocumentProviderProps) {
             });
         }, []);
 
-    const value: DoucumentContextType = { documentState, updateDocument };
+    const updateTitle = (e: React.FocusEvent<HTMLHeadingElement>) => {
+        const target = e.currentTarget.textContent || '';
+        documentState.title = target;
+    }
+
+    const value: DoucumentContextType = { documentState, updateDocument, updateTitle };
 
     return (
         <DocumentContext.Provider value={value}>
