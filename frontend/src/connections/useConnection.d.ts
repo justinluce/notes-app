@@ -1,10 +1,14 @@
 import * as signalR from '@microsoft/signalr';
 
-export type ConnectionStatus = 'loading' | 'reconnecting' | 'connected' | 'disconnected';
+export type ConnectionStatus = 'Loading' | 'Reconnecting' | 'Connected' | 'Disconnected';
 
 export interface ConnectionInterface {
   hubConnection: signalR.HubConnection | null;
   connectionStatus: ConnectionStatus;
+  /**
+   * Attempts to reconnect
+   */
+  reconnect: () => void;
   /**
   * Sends a message.
   * @param user - The username sending the message.

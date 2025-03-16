@@ -3,7 +3,7 @@ import * as signalR from '@microsoft/signalr';
 
 const useConnection = (user) => {
     const endpoint = import.meta.env.VITE_BACKEND_API;
-    const [connectionStatus, setConnectionStatus] = useState('loading');
+    const [connectionStatus, setConnectionStatus] = useState('Loading');
     const [hubConnection, setHubConnection] = useState(null);
 
     useEffect(() => {
@@ -15,28 +15,28 @@ const useConnection = (user) => {
         setHubConnection(connection);
 
         connection.onreconnecting(error => {
-            setConnectionStatus('reconnecting');
+            setConnectionStatus('Reconnecting');
             console.log('Reconnecting... ', error);
         });
 
         connection.onreconnected(connectionID => {
-            setConnectionStatus('connected');
+            setConnectionStatus('Connected');
             console.log('Reconnected. Connection ID: ', connectionID);
         });
 
         connection.onclose(error => {
-            setConnectionStatus('disconnected');
+            setConnectionStatus('Disconnected');
             console.log('Connection closed. ', error);
         });
 
         connection
             .start()
             .then(() => {
-                setConnectionStatus('connected');
+                setConnectionStatus('Connected');
                 console.log(`Connected as ${user}`);
             })
             .catch(err => {
-                setConnectionStatus('disconnected');
+                setConnectionStatus('Disconnected');
                 console.error('Error starting connection: ', err.toString());
             });
 
@@ -58,6 +58,18 @@ const useConnection = (user) => {
             console.log("Received update from server: ", content);
         });  
     }, [hubConnection]);
+
+    const reconnect = () => {
+        setConnectionStatus('Loading')
+        hubConnection.start()
+            .then(() => {
+                setConnectionStatus('Connected');
+            })
+            .catch(err => {
+                setConnectionStatus('Disconnected');
+                console.error('Error Reconnecting: ', err.toString());
+            })
+    }
     
     const sendMessage = (user, message) => {
         if (!hubConnection) return;
@@ -83,7 +95,7 @@ const useConnection = (user) => {
         return content;
     }
 
-    return { hubConnection, connectionStatus, sendMessage, sendUpdate, getContent }
+    return { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent }
 }
 
 export default useConnection;

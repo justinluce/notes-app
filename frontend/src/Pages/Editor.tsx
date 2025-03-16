@@ -1,4 +1,5 @@
 import { KeyboardEvent, useEffect, useState, useCallback, ChangeEvent } from "react";
+import '../styles/Editor.css';
 import useConnection from '../connections/useConnection.js';
 
 type Operation = {
@@ -39,7 +40,7 @@ export const Editor = () => {
     const [documentState, setDocumentState] = useState(new Document());
     const [messageState, setMessageState] = useState('');
 
-    const { hubConnection, connectionStatus, sendMessage, sendUpdate, getContent } = useConnection(user);
+    const { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(user);
     // const { sendMessage, sendUpdate } = useMessenger();
     
     // Operational Transformation
@@ -117,16 +118,21 @@ export const Editor = () => {
     // }, [documentState]);
     
     return (
-        <div>
-            <div>
-                {connectionStatus} as {user}
+        <div id='editor-container'>
+            <div id='connection-status'>
+                {(connectionStatus === 'Loading' || connectionStatus === 'Disconnected') && (
+                    <>
+                        <p>{connectionStatus}</p>
+                        {connectionStatus == 'Disconnected' && (
+                            <button onClick={() => reconnect()}>Reconnect</button>
+                        )}
+                    </>
+                )}
+                {connectionStatus == 'Connected' && (
+                    <p>Logged in as {user}</p>
+                )}
             </div>
-            <textarea onKeyDown={(e) => handleInput(e)} />
-            <div className="history-container">
-                {documentState.history.map((item, index) => (
-                    <p key={index}>{item.character}</p>
-                ))}
-            </div>
+            <textarea id='document' onKeyDown={(e) => handleInput(e)} />
             <input 
                 onChange={(e) => handleMessageText(e)}
                 value={messageState}

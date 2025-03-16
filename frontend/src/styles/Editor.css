@@ -1,0 +1,13 @@
+#editor-container {
+    height: 90vh;
+    width: 100%;
+}
+
+#connection-status {
+
+}
+
+#document {
+    height: 80%;
+    width: 100%;
+}
