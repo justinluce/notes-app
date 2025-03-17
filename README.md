@@ -19,11 +19,17 @@ A collaborative note-taking application, similar to Google Docs.
 - TypeScript
 - React
 
+Packages:
+- TipTap
+- dotenv
+
 ### Backend
 
-- Node
 - C# / .NET
 - MySQL
+
+Packages:
+- SignalR
 
 ### Deployment
 
