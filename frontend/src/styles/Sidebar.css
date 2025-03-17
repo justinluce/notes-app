@@ -117,6 +117,7 @@ h3 {
     #login-container {
         transform: translateY(-20vh);
         width: 100vw;
+        background-color: #1a1a1a;
     }
     #login-container input {
         width: 50%;
