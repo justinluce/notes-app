@@ -37,7 +37,7 @@ class Document {
 
 interface DoucumentContextType {
     documentState: Document;
-    updateDocument: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+    updateDocumentContent: (newContent: string) => void;
     updateTitle: (e: React.FocusEvent<HTMLHeadingElement>) => void;
 }
 
@@ -58,38 +58,46 @@ interface DocumentProviderProps {
 export function DocumentProvider({ children }: DocumentProviderProps) {
     const [documentState, setDocumentState] = useState<Document>(new Document());
 
-    const updateDocument = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.ctrlKey || e.altKey || e.metaKey) return;
-            if (e.key !== "Backspace" && e.key.length !== 1) return;
+    // const updateDocument = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    //         if (e.ctrlKey || e.altKey || e.metaKey) return;
+    //         if (e.key !== "Backspace" && e.key.length !== 1) return;
     
-            const target = e.target as HTMLTextAreaElement;
-            const newDocument = new Document();
-            newDocument.content = documentState.content;
-            newDocument.history = [...documentState.history];
+    //         const target = e.target as HTMLTextAreaElement;
+    //         const newDocument = new Document();
+    //         newDocument.content = documentState.content;
+    //         newDocument.history = [...documentState.history];
     
-            const operation: Operation = {
-                type: e.key === "Backspace" ? "Backspace" : "insert",
-                position: documentState.content.length,
-                character: e.key === "Backspace" ? "" : e.key,
-                userId: '2',
-                timestamp: Date.now()
-            };
+    //         const operation: Operation = {
+    //             type: e.key === "Backspace" ? "Backspace" : "insert",
+    //             position: documentState.content.length,
+    //             character: e.key === "Backspace" ? "" : e.key,
+    //             userId: '2',
+    //             timestamp: Date.now()
+    //         };
     
-            newDocument.applyOperation(operation);
+    //         newDocument.applyOperation(operation);
     
-            console.log(newDocument);
+    //         console.log(newDocument);
 
-            setDocumentState(prev => {
-                return new Document(documentState.title, target.value, [...prev.history, ...newDocument.history]);
-            });
-        }, []);
+    //         setDocumentState(prev => {
+    //             return new Document(documentState.title, target.value, [...prev.history, ...newDocument.history]);
+    //         });
+    //     }, []);
+
+    // Refactored version for TipTap updates
+    const updateDocumentContent = useCallback((newContent: string) => {
+        setDocumentState(prev =>
+            new Document(prev.title, newContent, prev.history)
+        );
+    }, []);
+  
 
     const updateTitle = (e: React.FocusEvent<HTMLHeadingElement>) => {
         const target = e.currentTarget.textContent || '';
         documentState.title = target;
     }
 
-    const value: DoucumentContextType = { documentState, updateDocument, updateTitle };
+    const value: DoucumentContextType = { documentState, updateDocumentContent, updateTitle };
 
     return (
         <DocumentContext.Provider value={value}>

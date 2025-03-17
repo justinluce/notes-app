@@ -56,7 +56,7 @@ const useConnection = (user) => {
         
         hubConnection.on("ReceiveDocumentUpdate", (content) => {
             console.log("Received update from server: ", content);
-        });  
+        });
     }, [hubConnection]);
 
     const reconnect = () => {

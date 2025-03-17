@@ -1,0 +1,14 @@
+#tip-tap {
+    width: 80vw;
+    height: 90vh;
+    border: 2px solid grey;
+}
+  
+#tip-tap .ProseMirror {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 1em;
+    box-sizing: border-box;
+    text-align: left;
+}

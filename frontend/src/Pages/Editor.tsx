@@ -3,11 +3,12 @@ import '../styles/Editor.css';
 import useConnection from '../connections/useConnection.js';
 import { useUser } from "../Context/UserContext.js";
 import { useDocument } from "../Context/DocumentContext.js";
+import TipTapEditor from '../Components/TipTapEditor.tsx';
 
 export const Editor = () => {
     const [messageState, setMessageState] = useState('');
 
-    const { documentState, updateDocument, updateTitle } = useDocument();
+    const { documentState, updateDocumentContent, updateTitle } = useDocument();
     const { currentUser, setUser, clearUser } = useUser();
     const { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(currentUser);
     // const { sendMessage, sendUpdate } = useMessenger();
@@ -41,9 +42,9 @@ export const Editor = () => {
     //     return opA;
     // }
 
-    const handleInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        updateDocument(e);
-    };
+    // const handleInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    //     updateDocument(e);
+    // };
 
     const handleMessageText = (e: ChangeEvent<HTMLInputElement>) => {    
         const target = e.target as HTMLInputElement;    
@@ -79,10 +80,10 @@ export const Editor = () => {
         // documentState.content = getContent();
     }, []);
 
-    // useEffect(() => {
-    //     console.log("running", documentState.content);
-    //     sendUpdate(user, documentState.content);
-    // }, [documentState]);
+    useEffect(() => {
+        console.log("running", documentState.content);
+        sendUpdate(hubConnection, currentUser, documentState.content);
+    }, [documentState]);
     
     return (
         <div id='editor-container'>
@@ -92,16 +93,21 @@ export const Editor = () => {
             <div id='document-title'>
                 <h2 
                     contentEditable='true'
+                    // Handling state update on blur, so this warning should be irrelevant
+                    suppressContentEditableWarning={true}
                     onBlur={(e) => updateTitle(e)}
                 >
                     {documentState.title}
                 </h2>
             </div>
-            <textarea
+            <TipTapEditor
+                content={documentState.content} 
+                onUpdateContent={updateDocumentContent}/>
+            {/* <textarea
                 id='document' 
                 onKeyUp={(e) => handleInput(e)}
                 defaultValue={documentState.content}
-            />
+            /> */}
             <input 
                 onChange={(e) => handleMessageText(e)}
                 value={messageState}
