@@ -4,7 +4,7 @@ A collaborative note-taking application, similar to Google Docs.
 
 ## Work in progress
 
-## Planned Features
+## Features
 
 - Users can edit a document synchronously.
 - Users are assigned different roles (owner, admin, or user).
@@ -18,6 +18,7 @@ A collaborative note-taking application, similar to Google Docs.
 
 - TypeScript
 - React
+- Firebase
 
 Packages:
 - TipTap
@@ -27,6 +28,7 @@ Packages:
 
 - C# / .NET
 - MySQL
+- Firestore
 
 Packages:
 - SignalR
@@ -34,3 +36,4 @@ Packages:
 ### Deployment
 
 - Docker
+- Kubernetes
