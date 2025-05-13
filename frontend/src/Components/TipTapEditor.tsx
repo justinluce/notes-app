@@ -4,6 +4,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import '../styles/TipTap.css'
 import { useEffect } from 'react';
+import TipTapMenu from './TipTapMenu';
 
 interface TiptapEditorProps {
   content: string;
@@ -29,7 +30,12 @@ const TipTapEditor = ({ content, onUpdateContent }: TiptapEditorProps) => {
 
   if (!editor) return null;
 
-  return <EditorContent id='tip-tap' editor={editor} />;
+  return (
+    <div className="tiptap-container">
+      <TipTapMenu editor={editor} />
+      <EditorContent id='tip-tap' editor={editor} />
+    </div>
+  );
 };
 
 export default TipTapEditor;

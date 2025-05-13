@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notes-frontend
+  template:
+    metadata:
+      name: notes-frontend
+      labels:
+        app: notes-frontend
+    spec:
+      containers:
+      - name: spa
+        image: justinluce/notes-frontend:prod
+        ports:
+        - containerPort: 80

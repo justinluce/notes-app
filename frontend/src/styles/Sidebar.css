@@ -7,6 +7,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 10;
 }
 
 #sidebar-main.sidebar-open {
@@ -17,10 +18,17 @@
     position: fixed;
     background: none;
     left: 0;
-    top: 10px;
+    top: 0px;
     border: none;
     width: 80px;
+    height: 80px;
     transition: transform 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    padding: 0;
+    z-index: 20;
 }
 
 #hamburger:focus {
@@ -67,14 +75,15 @@ h3 {
     margin: 5px;
 }
 
-#history-container, #recent-container {
+#history-container, #recent-container, #shared-container {
     width: 90%;
     text-align: left;
     border-bottom: 2px solid rgb(46, 46, 46);
     padding: 0;
+    font-size: 1.2em;
 }
 
-#history-list, #recent-list {
+#history-list, #recent-list, #shared-list {
     list-style-type: none;
     margin: 2px;
     max-height: 0;
@@ -83,10 +92,30 @@ h3 {
     transition: all 0.3s ease;
 }
 
-#history-list.history-open, #recent-list.recent-open {
+#history-list.history-open, #recent-list.recent-open, #shared-list.shared-open {
     max-height: 1000px;
     opacity: 1;
     overflow: auto;
+}
+
+
+#recent-list > li {
+    display: flex;
+    justify-content: space-between;
+}
+
+#recent-title, #history-item, #shared-item {
+    cursor: pointer;
+    width: 80%;
+}
+
+#history-list > li:not(:last-child), #recent-list > li:not(:last-child), #shared-list > li:not(:last-child) {
+    border-bottom: 1px solid rgb(46, 46, 46);
+}
+
+#delete-icon img {
+    cursor: pointer;
+    height: 1em;
 }
 
 #arrow {

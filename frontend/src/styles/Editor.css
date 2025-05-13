@@ -5,6 +5,7 @@
     justify-content: center;
     height: 90vh;
     width: 100%;
+    position: relative;
 }
 
 #connection-status {
@@ -14,4 +15,46 @@
 #document {
     height: 80%;
     width: 100%;
+}
+
+#document-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 1em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.top-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+#button-container {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    right: 0;
+}
+
+#save-button img, #share-button img {
+    width: 15px;
+    height: 15px;
+}
+
+#save-button, #share-button, #new-button {
+    background-color: rgb(50, 50, 255);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#new-button {
+    color: black;
+    font-size: 20px;
 }

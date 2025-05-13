@@ -3,13 +3,15 @@ import * as signalR from '@microsoft/signalr';
 
 const useConnection = (user) => {
     const endpoint = import.meta.env.VITE_BACKEND_API;
+    const [shouldConnect, setShouldConnect] = useState(false);
     const [connectionStatus, setConnectionStatus] = useState('Loading');
     const [hubConnection, setHubConnection] = useState(null);
+    const [usersList, setUsersList] = useState([]);
 
     useEffect(() => {
-        if (user === '') return;
+        if (user === '' || !shouldConnect) return;
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(`http://localhost:${endpoint}/chatHub`)
+            .withUrl(`/chatHub`)
             .withAutomaticReconnect()
             .build();
 
@@ -34,6 +36,9 @@ const useConnection = (user) => {
             .start()
             .then(() => {
                 setConnectionStatus('Connected');
+                connection.invoke('AddUser', user).catch(err => {
+                    console.error(err.toString());
+                });
                 console.log(`Connected as ${user}`);
             })
             .catch(err => {
@@ -45,7 +50,7 @@ const useConnection = (user) => {
             connection.stop();
             setHubConnection(null);
         }
-    }, [user]);
+    }, [user, shouldConnect]);
 
     useEffect(() => {
         if (!hubConnection) return;
@@ -57,10 +62,15 @@ const useConnection = (user) => {
         hubConnection.on("ReceiveDocumentUpdate", (content) => {
             console.log("Received update from server: ", content);
         });
+
+        hubConnection.on("ReceiveUsers", (users) => {
+            setUsersList(users);
+            console.log("received users: ", users);
+        });
     }, [hubConnection]);
 
     const reconnect = () => {
-        setConnectionStatus('Loading')
+        setConnectionStatus('Loading');
         hubConnection.start()
             .then(() => {
                 setConnectionStatus('Connected');
@@ -95,7 +105,15 @@ const useConnection = (user) => {
         return content;
     }
 
-    return { hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent }
+    const addUserToServer = (user) => {
+        if (!hubConnection) return;
+        console.log('adding user: ', user);
+        hubConnection.invoke('AddUser', user).catch(err => {
+            console.error(err.toString());
+        });
+    }
+
+    return { shouldConnect, setShouldConnect, hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent, addUserToServer }
 }
 
 export default useConnection;

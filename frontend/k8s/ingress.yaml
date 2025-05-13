@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notes-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      # ─── ChatHub traffic ────────────────────────
+      - path: /chatHub
+        pathType: Prefix
+        backend:
+          service:
+            name: notes-backend-svc
+            port:
+              number: 80
+
+      # ─── All other traffic ──────────────────
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: notes-frontend-svc
+            port:
+              number: 80

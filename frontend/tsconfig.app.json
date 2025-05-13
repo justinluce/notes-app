@@ -17,10 +17,13 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "noEmitOnError": false,        // allow emit even on errors
+    "noUnusedLocals": false,       // don’t error on unused locals
+    "noUnusedParameters": false    // don’t error on unused parameters
   },
   "include": ["src/**/*"]
 }

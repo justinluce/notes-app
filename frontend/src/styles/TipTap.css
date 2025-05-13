@@ -1,14 +1,142 @@
 #tip-tap {
-    width: 80vw;
-    height: 90vh;
+    width: 100%;
+    flex: 1;
     border: 2px solid grey;
+    background-color: #2b2b2b;
+    padding: 16px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
   
 #tip-tap .ProseMirror {
-    height: 100%;
+    flex: 1;
     width: 100%;
     margin: 0;
     padding: 1em;
     box-sizing: border-box;
     text-align: left;
+    outline: none;
+    overflow-y: auto;
+}
+
+#tip-tap .ProseMirror p {
+    margin: 0;
+}
+
+#tip-tap .ProseMirror h1,
+#tip-tap .ProseMirror h2,
+#tip-tap .ProseMirror h3,
+#tip-tap .ProseMirror h4,
+#tip-tap .ProseMirror h5,
+#tip-tap .ProseMirror h6 {
+    margin: 1em 0 0.5em;
+}
+
+#tip-tap .ProseMirror ul,
+#tip-tap .ProseMirror ol {
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+}
+
+#tip-tap .ProseMirror blockquote {
+    border-left: 3px solid #ccc;
+    margin: 0.5em 0;
+    padding-left: 1em;
+    color: #666;
+}
+
+#tip-tap .ProseMirror pre {
+    background: #f4f4f4;
+    padding: 0.75em 1em;
+    border-radius: 0.5em;
+    margin: 0.5em 0;
+}
+
+#tip-tap .ProseMirror code {
+    background: #474747;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+    font-size: 0.9em;
+}
+
+.tiptap-container {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tiptap-menu {
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f8f9fa;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.tiptap-menu button {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    color: black;
+    font-size: 14px;
+    min-width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tiptap-menu button:hover {
+    background-color: #f0f0f0;
+}
+
+.tiptap-menu button.is-active {
+    background-color: #e9ecef;
+    border-color: #999;
+}
+
+.tiptap-menu button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tiptap-container > div:first-child {
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f8f9fa;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.tiptap-container > div:first-child > button {
+    color: black;
+}
+
+.tiptap-container button {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.tiptap-container button:hover {
+    background-color: #f0f0f0;
+}
+
+.tiptap-container button.is-active {
+    background-color: #e9ecef;
+    border-color: #999;
+}
+
+.tiptap-container button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

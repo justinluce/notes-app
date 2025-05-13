@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notes-backend
+  template:
+    metadata:
+      labels:
+        app: notes-backend
+    spec:
+      containers:
+      - name: notes-backend
+        image: justinluce/notes-backend:prod
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
