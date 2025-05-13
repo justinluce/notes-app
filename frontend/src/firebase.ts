@@ -7,13 +7,13 @@ import { HistoryItem } from './Context/UserContext';
 // Firebase configuration
 // https://support.google.com/firebase/answer/7015592
 const firebaseConfig = {
-    apiKey: 'AIzaSyCgO7sH4-TCuF0UV6Pu3xzoqvLrKmTQvRc',
-    authDomain: 'notes-app-25de9.firebaseapp.com',
-    projectId: 'notes-app-25de9',
-    storageBucket: 'notes-app-25de9.firebasestorage.app',
-    messagingSenderId: '508838000586',
-    appId: '1:508838000586:web:58037fda20735cbd0c8133',
-    measurementId: 'G-EBDERWKPMY'
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
   };
 
 // TODO: Will need to enable offline data https://firebase.google.com/docs/firestore/manage-data/enable-offline
