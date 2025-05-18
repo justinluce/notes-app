@@ -2,8 +2,6 @@
 
 A collaborative note-taking application, similar to Google Docs.
 
-## Work in progress
-
 ## Features
 
 - Users can edit a document synchronously.
@@ -12,7 +10,7 @@ A collaborative note-taking application, similar to Google Docs.
 - Users can undo/redo their edits.
 - Users can edit offline, and sync their changes when they come back online.
 
-## Technologies used:
+## Technologies used
 
 ### Frontend
 
@@ -21,8 +19,8 @@ A collaborative note-taking application, similar to Google Docs.
 - Firebase
 
 Packages:
+
 - TipTap
-- dotenv
 
 ### Backend
 
@@ -31,6 +29,7 @@ Packages:
 - Firestore
 
 Packages:
+
 - SignalR
 
 ### Deployment

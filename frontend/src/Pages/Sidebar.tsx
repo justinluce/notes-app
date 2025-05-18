@@ -21,24 +21,12 @@ export const Sidebar = () => {
     const [createAccountModal, setCreateAccountModal] = useState<boolean>(false);
 
     const { currentUser, setUser, clearUser, yourDocs, sharedDocs, docHistory, updateYourDocs, updateDocHistory } = useUser();
-    const { updateOwner, loadDoc, updateDocumentContent } = useDocument();
+    const { updateOwner, loadDoc, updateDocumentContent, updateTitle } = useDocument();
 
     const toggleSidebar = () => {
         setSidebarOpen(prev => !prev);
     }
     
-    const handleLogin = () => {
-        // setUser(username);
-        updateOwner(username);
-        getDocuments(username)
-            .then((docs) => {
-                updateYourDocs(docs, username);
-            })
-            .catch((err) => {
-                console.error('Error fetching docs: ', err)
-            });
-    }
-
     const handleLogout = () => {
         clearUser();
         loadDoc(new NoteDoc(''));
@@ -94,6 +82,8 @@ export const Sidebar = () => {
             
             if (success && yourDocs) {
                 updateYourDocs(yourDocs.filter((item: { id: string | null; }) => item.id !== docItem.id), currentUser);
+                updateDocumentContent(new NoteDoc(currentUser, 'New Document', '', [], null, []).content);
+                updateTitle('New Document');
             }
         } catch (error) {
             console.error('Error in handleDelete:', error);

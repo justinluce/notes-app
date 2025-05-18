@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useState, useCallback, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/Editor.css';
 import useConnection from '../connections/useConnection.js';
 import { useUser } from '../Context/useUser.ts';
@@ -7,14 +7,33 @@ import { useDocument } from '../Context/useDocument.ts';
 import TipTapEditor from '../Components/TipTapEditor.tsx';
 import { getDocuments, saveDocument } from '../firebase.ts';
 import { ShareModal } from './ShareModal.tsx';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import TurndownService from 'turndown';
 
 export const Editor = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const turndownService = new TurndownService();
 
-    const { documentState, updateDocumentContent, updateTitle, loadDoc } = useDocument();
-    const { currentUser, setUser, clearUser, updateYourDocs } = useUser();
-    const { shouldConnect, setShouldConnect, hubConnection, connectionStatus, reconnect, sendMessage, sendUpdate, getContent } = useConnection(currentUser);
-    // const { sendMessage, sendUpdate } = useMessenger();
+    const { documentState, updateDocumentContent, updateTitle, loadDoc, updateID } = useDocument();
+    const { currentUser, updateYourDocs } = useUser();
+    const { shouldConnect, setShouldConnect, connectionStatus, reconnect } = useConnection(currentUser);
+
+    const editor = useEditor({
+        extensions: [StarterKit],
+        content: documentState.content,
+        onUpdate: ({ editor }) => {
+            const newContent = editor.getHTML();
+            updateDocumentContent(newContent);
+        },
+    });
+    
+    // Need to update editor content to keep it in sync with documentState.content
+    useEffect(() => {
+        if (editor && documentState.content !== editor.getHTML()) {
+            editor.commands.setContent(documentState.content);
+        }
+    }, [documentState.content, editor]);
     
     // Operational Transformation
     // function transform(opA: Operation, opB: Operation): Operation {
@@ -74,7 +93,16 @@ export const Editor = () => {
     }
 
     const handleDownload = () => {
-        
+        if (!editor) return;
+        const html = editor.getHTML();
+        const markdown = turndownService.turndown(html);
+        const blob = new Blob([markdown], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${documentState.title}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
     useEffect(() => {
@@ -93,6 +121,7 @@ export const Editor = () => {
             <div id='connection-status'>
                 {renderConnectionStatus()}
             </div>
+            <button onClick={() => console.log(documentState)}>Log document state</button>
             <div className='top-container'>
                 <h2 
                     id='document-title'
@@ -104,15 +133,17 @@ export const Editor = () => {
                     {documentState.title}
                 </h2>
                 <div id='button-container'>
-                    {/* <button onClick={() => console.log(documentState)}>Log document state</button> */}
                     <button id='new-button' onClick={() => {
-                        // Create completely new document (reset ID and content)
                         const newDoc = new NoteDoc(currentUser, 'New Document', '', [], null, []);
                         loadDoc(newDoc);
                     }}>New Doc</button>
-                    <button id='save-button' onClick={() => saveDocument(documentState).then(() => {
+                    <button id='save-button' onClick={() => saveDocument(documentState).then((id) => {
+                        console.log(id);
+                        updateID(id);
                         getDocuments(currentUser).then((docs) => {
-                            if (documentState.owner) return updateYourDocs(docs, documentState.owner);
+                            if (documentState.owner) {
+                                return updateYourDocs(docs, documentState.owner);
+                            }
                         })
                     })}><img src='/save-icon.png' /></button>
                     <button id='share-button' onClick={() => setModalOpen(true)}><img src='/share-icon.png' /></button>
@@ -120,25 +151,10 @@ export const Editor = () => {
                 </div>
             </div>
             {modalOpen && (
-                <ShareModal document={documentState} open={modalOpen} onClose={() => setModalOpen(false)} />
+                <ShareModal document={documentState} onClose={() => setModalOpen(false)} />
             )}
-            {/* <button onClick={() => {
-                getDocuments(currentUser)
-                    .then((docs) => {
-                        updateRecentDocs(docs);
-                    })
-                    .catch((err) => {
-                        console.error("Error fetching docs: ", err)
-                    })
-            }}>Get Documents</button> */}
             <TipTapEditor
-                content={documentState.content} 
-                onUpdateContent={updateDocumentContent} />
-            {/* <textarea
-                id='document' 
-                onKeyUp={(e) => handleInput(e)}
-                defaultValue={documentState.content}
-            /> */}
+                editor={editor} />
         </div>
     )
 }

@@ -2,15 +2,19 @@ using System;
 
 public interface IUserService 
 {
-    List<string> Users { get; }
-    void AddUser(string user);
+    List<object> Users { get; }
+    void AddUser(string user, string groupName);
+    void RemoveUser(string user, string groupName);
 }
 
 public class UserService : IUserService 
 {
-    public List<string> Users { get; } = new List<string>();
-
-    public void AddUser(string user) {
-        Users.Add(user);
+    public List<object> Users { get; } = new List<object>();
+    
+    public void AddUser(string user, string groupName) {
+        Users.Add(new { user, groupName });
+    }
+    public void RemoveUser(string user, string groupName) {
+        Users.Remove(new { user, groupName });
     }
 }

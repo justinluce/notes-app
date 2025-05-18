@@ -186,19 +186,22 @@ const getDocuments = async (email: string | null): Promise<NoteDoc[]> => {
   if (email === null) return [];
   
   try {
+    console.log('Getting documents for email:', email);
     // First get the user ID
     const userQuery = query(collection(db, 'users'), where('email', '==', email));
     const userSnapshot = await getDocs(userQuery);
     
     if (userSnapshot.empty) {
-      console.error('User not found');
+      console.error('User not found for email:', email);
       return [];
     }
     
     const userId = userSnapshot.docs[0].id;
+    console.log('Found user ID:', userId);
     
     // Get all documents for this user
     const docsSnapshot = await getDocs(collection(db, 'users', userId, 'documents'));
+    console.log('Found documents:', docsSnapshot.docs.length);
     
     const docs = docsSnapshot.docs.map((item) => new NoteDoc(
       item.data().owner,
@@ -211,7 +214,7 @@ const getDocuments = async (email: string | null): Promise<NoteDoc[]> => {
     
     return docs;
   } catch (err) {
-    console.error('Error getting docs from db: ', err);
+    console.error('Error getting docs from db:', err);
     return [];
   }
 };

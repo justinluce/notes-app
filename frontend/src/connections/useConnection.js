@@ -17,6 +17,8 @@ const useConnection = (user) => {
 
         setHubConnection(connection);
 
+        console.log(connection);
+
         connection.onreconnecting(error => {
             setConnectionStatus('Reconnecting');
             console.log('Reconnecting... ', error);
@@ -36,7 +38,7 @@ const useConnection = (user) => {
             .start()
             .then(() => {
                 setConnectionStatus('Connected');
-                connection.invoke('AddUser', user).catch(err => {
+                connection.invoke('AddToGroup', user).catch(err => {
                     console.error(err.toString());
                 });
                 console.log(`Connected as ${user}`);

@@ -66,6 +66,7 @@ export interface DocumentContextType {
     updateDocumentContent: (newContent: string) => void;
     updateTitle: (e: React.FocusEvent<HTMLHeadingElement> | string) => void;
     updateOwner: (email: string) => void;
+    updateID: (id: string | null) => void;
     loadDoc: (doc: NoteDoc) => void;
 }
 
@@ -121,11 +122,15 @@ export function DocumentProvider({ children }: DocumentProviderProps) {
         setDocumentState(prev => prev.cloneWith({ owner: email }));
     }
 
+    const updateID = (id: string | null) => {
+        setDocumentState(prev => prev.cloneWith({ id: id }));
+    }
+
     const loadDoc = (doc: NoteDoc) => {
         setDocumentState(doc);
     }
 
-    const value: DocumentContextType = { documentState, updateDocumentContent, updateTitle, updateOwner, loadDoc };
+    const value: DocumentContextType = { documentState, updateDocumentContent, updateTitle, updateOwner, updateID, loadDoc };
 
     return (
         <DocumentContext.Provider value={value}>
