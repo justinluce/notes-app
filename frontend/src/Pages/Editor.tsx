@@ -121,7 +121,7 @@ export const Editor = () => {
             <div id='connection-status'>
                 {renderConnectionStatus()}
             </div>
-            <button onClick={() => console.log(documentState)}>Log document state</button>
+            {/* <button onClick={() => console.log(documentState)}>Log document state</button> */}
             <div className='top-container'>
                 <h2 
                     id='document-title'
