@@ -95,7 +95,7 @@ const saveDocument = async (document: NoteDoc) => {
         title: document.title,
         content: document.content,
         history: newHistory,
-        sharedWith: document.sharedWith || []
+        sharedWith: document.sharedWith || ''
       });
       return document.id;
     } else {
@@ -132,7 +132,7 @@ const addNewDoc = async (document: NoteDoc) => {
       title: document.title,
       content: document.content,
       history: document.history || [],
-      sharedWith: document.sharedWith || []
+      sharedWith: document.sharedWith || ''
     });
     
     console.log('Document written with ID: ', docRef.id);
@@ -209,7 +209,7 @@ const getDocuments = async (email: string | null): Promise<NoteDoc[]> => {
       item.data().content,
       item.data().history || [],
       item.id,
-      item.data().sharedWith || []
+      item.data().sharedWith || ''
     ));
     
     return docs;
@@ -243,7 +243,7 @@ const getSharedDocuments = async (email: string | null): Promise<NoteDoc[]> => {
       item.data().content,
       item.data().history || [],
       item.id,
-      item.data().sharedWith ? [item.data().sharedWith] : []
+      item.data().sharedWith || ''
     ));
     
     return docs;
@@ -288,7 +288,7 @@ const getSingleDoc = async (email: string | null, document: NoteDoc): Promise<{ 
             data.content,
             data.history || [],
             dbDoc.id,
-            data.sharedWith || []
+            data.sharedWith || ''
           )
         };
       }

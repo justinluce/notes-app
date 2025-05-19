@@ -12,34 +12,40 @@ namespace SignalRChat.Hubs
             _userService = userService;
         }
 
-        public async Task UpdateDocument(string user, string newContent) {
+        public async Task UpdateDocument(string documentId, string user, string newContent) {
             _documentService.UpdateContent(newContent);
-            System.Console.WriteLine(newContent);
-            await Clients.All.SendAsync("ReceiveDocumentUpdate", _documentService.GetContent());
+            // Send update only to users in the document's group
+            await Clients.Group(documentId).SendAsync("ReceiveDocumentUpdate", newContent);
         }
+
+        public async Task JoinDocumentGroup(string documentId, string user) {
+            await Groups.AddToGroupAsync(Context.ConnectionId, documentId);
+            await AddUser(user, documentId);
+            await Clients.Group(documentId).SendAsync("ReceiveMessage", $"{user} has joined the document.");
+        }
+
+        public async Task LeaveDocumentGroup(string documentId, string user) {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, documentId);
+            await RemoveUser(user, documentId);
+            await Clients.Group(documentId).SendAsync("ReceiveMessage", $"{user} has left the document.");
+        }
+
         public async Task SendMessage(string user, string message) {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+
         public async Task AddUser(string user, string groupName) {
             _userService.AddUser(user, groupName);
-            await Clients.All.SendAsync("ReceiveUsers", _userService.Users);
+            await Clients.Group(groupName).SendAsync("ReceiveUsers", _userService.Users);
         }
+
         public async Task RemoveUser(string user, string groupName) {
             _userService.RemoveUser(user, groupName);
-            await Clients.All.SendAsync("ReceiveUsers", _userService.Users);
-        }
-        public async Task AddToGroup(string groupName) {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            await AddUser(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has joined the group {groupName}.");
-        }
-        public async Task RemoveFromGroup(string groupName) {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-            await RemoveUser(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has left the group {groupName}.");
-        }
-        public async Task GetUsersInGroup(string groupName) {
             await Clients.Group(groupName).SendAsync("ReceiveUsers", _userService.Users);
+        }
+
+        public async Task GetUsersInDocument(string documentId) {
+            await Clients.Group(documentId).SendAsync("ReceiveUsers", _userService.Users);
         }
     }
 }

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import '../styles/Editor.css';
-import useConnection from '../connections/useConnection.js';
-import { useUser } from '../Context/useUser.ts';
-import { NoteDoc } from '../Context/DocumentContext.js';
-import { useDocument } from '../Context/useDocument.ts';
-import TipTapEditor from '../Components/TipTapEditor.tsx';
-import { getDocuments, saveDocument } from '../firebase.ts';
-import { ShareModal } from './ShareModal.tsx';
+import useConnection from '../connections/useConnection';
+import { useUser } from '../Context/useUser';
+import { NoteDoc } from '../Context/DocumentContext';
+import { useDocument } from '../Context/useDocument';
+import TipTapEditor from '../Components/TipTapEditor';
+import { getDocuments, saveDocument } from '../firebase';
+import { ShareModal } from './ShareModal';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TurndownService from 'turndown';
@@ -17,7 +17,27 @@ export const Editor = () => {
 
     const { documentState, updateDocumentContent, updateTitle, loadDoc, updateID } = useDocument();
     const { currentUser, updateYourDocs } = useUser();
-    const { shouldConnect, setShouldConnect, connectionStatus, reconnect } = useConnection(currentUser);
+    const { shouldConnect, setShouldConnect, connectionStatus, hubConnection, updateDocument } = useConnection(
+        currentUser, 
+        documentState.id,
+        (content) => {
+            if (content !== documentState.content) {
+                updateDocumentContent(content);
+            }
+        }
+    );
+
+    // Set up SignalR connection when document is loaded or user changes
+    useEffect(() => {
+        console.log('Connection state:', { currentUser, documentId: documentState.id, shouldConnect });
+        if (currentUser && documentState.id) {
+            console.log('Setting shouldConnect to true');
+            setShouldConnect(true);
+        } else {
+            console.log('Setting shouldConnect to false');
+            setShouldConnect(false);
+        }
+    }, [documentState.id, currentUser, setShouldConnect]);
 
     const editor = useEditor({
         extensions: [StarterKit],
@@ -25,6 +45,10 @@ export const Editor = () => {
         onUpdate: ({ editor }) => {
             const newContent = editor.getHTML();
             updateDocumentContent(newContent);
+            // Send update through SignalR
+            if (hubConnection) {
+                updateDocument(newContent);
+            }
         },
     });
     
@@ -34,99 +58,45 @@ export const Editor = () => {
             editor.commands.setContent(documentState.content);
         }
     }, [documentState.content, editor]);
-    
-    // Operational Transformation
-    // function transform(opA: Operation, opB: Operation): Operation {
-    //     if (opA.position < opB.position || (opA.position === opB.position && opA.timestamp < opB.timestamp)) {
-    //       return opA; // don't adjust if it's earlier
-    //     }
-      
-    //     if (opA.type === "insert" && opB.type === "insert") {
-    //       // if both are at the same position, move the second one forward
-    //       return { ...opA, position: opA.position + 1 };
-    //     }
-      
-    //     if (opA.type === "Backspace" && opB.type === "insert") {
-    //       // deleting a character before an insert doesn't affect it
-    //       return opA;
-    //     }
-      
-    //     if (opA.type === "insert" && opB.type === "Backspace") {
-    //       // if deleting before an insert, move insert position back
-    //       return { ...opA, position: Math.max(0, opA.position - 1) };
-    //     }
-      
-    //     if (opA.type === "Backspace" && opB.type === "Backspace") {
-    //       // if deleting the same character, ignore the second delete
-    //       return opA;
-    //     }
-      
-    //     return opA;
-    // }
-
-    // const handleInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    //     updateDocument(e);
-    // };
 
     const renderConnectionStatus = () => {
-        if (!shouldConnect) {
-            return <p></p>;
+        console.log('Rendering connection status:', connectionStatus);
+        switch (connectionStatus) {
+            case 'Connected':
+                return <div className='status connected'>Connected</div>;
+            case 'Disconnected':
+                return <div className='status disconnected'>Disconnected</div>;
+            case 'Reconnecting':
+                return <div className='status reconnecting'>Reconnecting...</div>;
+            case 'Connecting':
+                return <div className='status connecting'>Connecting...</div>;
+            default:
+                return <div className='status disconnected'>Disconnected</div>;
         }
-        if (currentUser === '') {
-            return <p>Not logged in</p>;
-        }
-
-        if (connectionStatus === 'Connected') {
-            return <p>Logged in as {currentUser}</p>;
-        }
-      
-        if (connectionStatus === 'Disconnected') {
-          return (
-            <>
-              <p>{connectionStatus}</p>
-              <button onClick={reconnect}>Reconnect</button>
-            </>
-          );
-        }
-
-        return <p>{connectionStatus}</p>
-    }
+    };
 
     const handleDownload = () => {
-        if (!editor) return;
-        const html = editor.getHTML();
-        const markdown = turndownService.turndown(html);
+        const markdown = turndownService.turndown(documentState.content);
         const blob = new Blob([markdown], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `${documentState.title}.md`;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
-    }
-
-    useEffect(() => {
-        if (documentState.sharedWith.length > 0 || (currentUser && documentState.sharedWith.includes(currentUser))) {
-            setShouldConnect(true);
-        }
-    }, [documentState]);
-
-    // useEffect(() => {
-    //     console.log("running", documentState.content);
-    //     sendUpdate(hubConnection, currentUser, documentState.content);
-    // }, [documentState]);
+    };
 
     return (
         <div id='editor-container'>
             <div id='connection-status'>
                 {renderConnectionStatus()}
             </div>
-            {/* <button onClick={() => console.log(documentState)}>Log document state</button> */}
             <div className='top-container'>
                 <h2 
                     id='document-title'
                     contentEditable='true'
-                    // Handling state update on blur, so this warning should be irrelevant
                     suppressContentEditableWarning={true}
                     onBlur={(e) => updateTitle(e)}
                 >
