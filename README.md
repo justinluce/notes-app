@@ -2,7 +2,7 @@
 
 A collaborative note-taking application, similar to Google Docs.
 
-Hosted on [notes.justinlucedev.com](https://notes.justinlucedev.com)
+Hosted on <a href="https://notes.justinlucedev.com" target="_blank">notes.justinlucedev.com</a>
 
 ## Features
 
