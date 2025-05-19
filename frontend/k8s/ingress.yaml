@@ -2,21 +2,20 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: notes-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - notes.justinlucedev.com
+    secretName: notes-tls
   rules:
-  - http:
+  - host: notes.justinlucedev.com
+    http:
       paths:
-      # ─── ChatHub traffic ────────────────────────
-      - path: /chatHub
-        pathType: Prefix
-        backend:
-          service:
-            name: notes-backend-svc
-            port:
-              number: 80
-
-      # ─── All other traffic ──────────────────
       - path: /
         pathType: Prefix
         backend:
