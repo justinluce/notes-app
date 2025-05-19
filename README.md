@@ -2,6 +2,8 @@
 
 A collaborative note-taking application, similar to Google Docs.
 
+Hosted on [notes.justinlucedev.com](https://notes.justinlucedev.com)
+
 ## Features
 
 - Users can edit a document synchronously.
