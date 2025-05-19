@@ -10,7 +10,6 @@ interface ConnectionInterface {
     updateDocument: (content: string) => Promise<void>;
 }
 
-// Get the base URL from environment or default to current origin
 const getBaseUrl = () => {
     if (import.meta.env.VITE_API_URL) {
         console.log('Using VITE_API_URL:', import.meta.env.VITE_API_URL);

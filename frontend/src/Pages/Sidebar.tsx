@@ -8,8 +8,8 @@ import { query, collection, getDocs, where } from 'firebase/firestore';
 import { useUser } from '../Context/useUser.ts';
 import { useDocument } from '../Context/useDocument.ts';
 import CreateAccountModal from './CreateAccountModal';
-// TODO: Need to update history when we save (currently is not updating until you click on the recent doc)
-// I think it works now??
+// Need to update history when we save (currently is not updating until you click on the recent doc)
+// I think it works now?
 
 export const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
